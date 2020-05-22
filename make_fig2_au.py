@@ -27,7 +27,9 @@ if __name__ == '__main__':
             g.append(action._g)
             n.append(action._n)
 
-        plt.title("For mean=%s and std=%s" % (MEAN, STD))
+        plt.title("For normal distribution of the reward with mean=%s and std=%s" % (MEAN, STD))
+        plt.xlabel("Steps")
+        plt.ylabel("Synaptic weight")
         plt.plot(N, g)
         plt.plot(N, n)
     plt.show()
