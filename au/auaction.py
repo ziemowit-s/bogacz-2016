@@ -1,8 +1,17 @@
+from typing import Optional
+
 import numpy as np
 
 
-class Action:
-    def __init__(self, alfa=0.1, beta=None, actor_only=True):
+class AUAction:
+    def __init__(self, alfa:float = 0.1, beta: Optional[float] = None, actor_only: bool = True,
+                 a: int = 1, b: int = 1):
+        """
+        Actor Uncertainty action
+        :param alfa:
+        :param beta:
+        :param actor_only:
+        """
         self._alfa = alfa
         if not beta:
             self._beta = self._alfa / np.sqrt(2 * np.pi)
@@ -15,8 +24,8 @@ class Action:
         self._s = 0
         self._q = 0
 
-        self.a = 0
-        self.b = 0
+        self.a = 1
+        self.b = 1
 
     def v(self, r: float):
         self._v = self._v + self._alfa * (r - self._v)
@@ -41,10 +50,7 @@ class Action:
         s = self._g + self._n
         self._s = s + self._alfa * np.abs(r - self._v) - self._alfa * s
 
-    def compute(self, r, a, b):
-        self.a = a
-        self.b = b
-
+    def reward(self, r):
         self.v(r)
         self.q(r)
 
@@ -52,3 +58,17 @@ class Action:
         self.n(r)
 
         self.s(r)
+
+    def act(self, a=None, b=None):
+        if a:
+            self.a = a
+        if b:
+            self.b = b
+        q = self._g - self._n
+        s = self._g + self._n
+
+        u = (self.a + self.b) * q - (self.b - self.a) * s
+
+        pi = np.exp(0.5 * u)
+        return pi
+
