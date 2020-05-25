@@ -13,10 +13,12 @@ class AUAction:
         :param actor_only:
         """
         self._alfa = alfa
-        if not beta:
+        if actor_only:
+            self._beta = self._alfa
+        elif not beta:
             self._beta = self._alfa / np.sqrt(2 * np.pi)
-
         self.actor_only = actor_only
+
         self._v = 0
         self._g = 0
         self._n = 0
@@ -24,39 +26,30 @@ class AUAction:
         self._s = 0
         self._q = 0
 
-        self.a = 1
-        self.b = 1
+        self.a = a
+        self.b = b
 
     def v(self, r: float):
         self._v = self._v + self._alfa * (r - self._v)
 
     def g(self, r):
-        if self.actor_only:
-            self._g = self._g + self._alfa * np.max([r - self._q, 0]) - self._beta * self._g
-        else:
-            self._g = self._g + self._alfa * np.max([r - self._v, 0]) - self._alfa * self._g
+        self._g = self._g + self._alfa * np.max([r - self._get_comparator(), 0]) - self._beta * self._g
 
     def n(self, r):
-        if self.actor_only:
-            self._n = self._n + self._alfa * np.abs(np.min([r - self._q, 0])) - self._beta * self._n
-        else:
-            self._n = self._n + self._alfa * np.abs(np.min([r - self._v, 0])) - self._alfa * self._n
+        self._n = self._n + self._alfa * np.abs(np.min([r - self._get_comparator(), 0])) - self._beta * self._n
 
     def q(self, r):
-        q = self._g - self._n
-        self._q = q + self._alfa * (r - self._v) - self._alfa * q
+        self._q = self._g - self._n  # q + self._alfa * (r - self._v) - self._alfa * q
 
     def s(self, r):
-        s = self._g + self._n
-        self._s = s + self._alfa * np.abs(r - self._v) - self._alfa * s
+        self._s = self._g + self._n  # s + self._alfa * np.abs(r - self._v) - self._alfa * s
 
     def reward(self, r):
-        self.v(r)
-        self.q(r)
-
         self.g(r)
         self.n(r)
 
+        self.v(r)
+        self.q(r)
         self.s(r)
 
     def act(self, a=None, b=None):
@@ -64,11 +57,14 @@ class AUAction:
             self.a = a
         if b:
             self.b = b
-        q = self._g - self._n
-        s = self._g + self._n
 
-        u = (self.a + self.b) * q - (self.b - self.a) * s
-
+        u = (self.a + self.b) * self._q - (self.b - self.a) * self._s
         pi = np.exp(0.5 * u)
         return pi
+
+    def _get_comparator(self):
+        if self.actor_only:
+            return self._q
+        else:
+            return self._v
 

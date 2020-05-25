@@ -18,6 +18,6 @@ class AUModel:
     def reward(self, reward, state: int = 0, action: int = 0):
         self.states[state].reward(reward=reward, action=action)
 
-    def act(self, state: int, a: float = 1, b: float = 1):
+    def act(self, state: int = 0, a: float = 1, b: float = 1):
         probas = self.states[state].act(a=a, b=b)
         return probas

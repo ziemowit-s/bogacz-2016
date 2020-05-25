@@ -4,21 +4,10 @@ from au.aumodel import AUModel
 
 """
 Train Actor Uncertainty Model with detrministic reward.
-
-Choose: 
-EPOCH - number of epoches 
-ACTOR_ONLY - if true model will not use critic and 
-STATE_AND_ACTION_NUM - number of states and actions (same number here)
-  * for state=0 action=0 is rewarded, for state=n action=n is rewarded etc.
-  * if work well should return Probability matrix with highest probabilities on diagonal,
-    example for STATE_AND_ACTION_NUM=4 and BATCH_NUM=100:
-      [0.415126880851062, 0.19495770638297932, 0.19495770638297932, 0.19495770638297932]
-      [0.18563139548871202, 0.40773597674796314, 0.2033163138816624, 0.2033163138816624]
-      [0.1883143045894067, 0.1883143045894067, 0.41711656975760747, 0.20625482106357915]
-      [0.19061311338016393, 0.19061311338016393, 0.19061311338016393, 0.4281606598595082]
 """
 if __name__ == '__main__':
     EPOCH = 1
+    REWARD = 1
     BATCH_NUM = 100
     ACTOR_ONLY = True
     STATE_AND_ACTION_NUM = 4
@@ -37,10 +26,10 @@ if __name__ == '__main__':
             action = int(np.argmax(actions))
 
             if state == action:
-                r = 1
+                r = REWARD
                 accuracy.append(1)
             else:
-                r = -1
+                r = -REWARD
                 accuracy.append(0)
             model.reward(reward=r, state=state, action=action)
 
