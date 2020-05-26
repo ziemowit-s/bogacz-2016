@@ -15,7 +15,8 @@ if __name__ == '__main__':
     STD = 2
 
     for epoch in range(50):
-        model = AUModel(num_of_states=1, num_of_actions=1, actor_only=True)
+        model = AUModel(num_of_states=1, num_of_actions=1, with_critic=False,
+                        alfa=0.1, beta=0.1 / np.sqrt(2 * np.pi))
         action = model.states[0].actions[0]
 
         g = []

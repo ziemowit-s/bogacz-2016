@@ -4,7 +4,7 @@ import numpy as np
 
 
 class AUAction:
-    def __init__(self, alfa:float = 0.1, beta: Optional[float] = None, actor_only: bool = True,
+    def __init__(self, alfa:float = 0.1, beta: float = 0.1, actor_only: bool = True,
                  a: int = 1, b: int = 1):
         """
         Actor Uncertainty action
@@ -13,10 +13,7 @@ class AUAction:
         :param actor_only:
         """
         self._alfa = alfa
-        if actor_only:
-            self._beta = self._alfa
-        elif not beta:
-            self._beta = self._alfa / np.sqrt(2 * np.pi)
+        self._beta = beta
         self.actor_only = actor_only
 
         self._v = 0

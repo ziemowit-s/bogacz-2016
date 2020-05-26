@@ -10,8 +10,9 @@ Parameters:
 * MEAN - mean of the reward distribution
 * STD - standard deviation of the reward distribution
 
-50 trials of GO/NO-GO adjustment to the reward for actor only (no critic)
-![fig2](fig2.png)
+50 trials of GO/NO-GO adjustment to the reward for actor only (no critic):
+![fig2](figures/fig2.png)
+
 * G (GO population) - all upper curves
 * N (NO-GO population) - all lower curves
 
@@ -38,8 +39,12 @@ Example of the matrix for STATE_AND_ACTION_NUM=4, BATCH_NUM=100, REWARD=1:
 ```
 
 ## train_au_with_uncertain_reward.py
-Replication of the fig. 5 of the paper.
+* Replication of the fig. 5 of the paper.
 Train Actor Uncertainty Model with uncertain reward.
+
+Reward were set to 1 for safe reward and 4 for risky reward based on the publication:
+"risky lever gave higher expected reward in the 100% and 50% conditions while choosing the safe 
+lever had higher mean reward in the 12.5% condition"
 
 Manipulate params to change agent preferences of choosing risky/non-risky reward. 
 In general if (b-a) is bigger - preference for risk choosing is higher
@@ -54,3 +59,9 @@ In general if (b-a) is bigger - preference for risk choosing is higher
 You can also manipulate A,B params for DA agonist/antagonist in D1 (A param) and/or D2 (B param).
 A_CONT and B_CONT stands for A and B control conditions and if you want to use them - you need to
 override A or B params respectively.
+
+Replication of fig. 5 from averaged 10 runs of 10000 steps:
+![fig5](figures/fig5.png)
+
+Original fig. 5 from the publication:
+![fig5publication](figures/fig5_publication.png)

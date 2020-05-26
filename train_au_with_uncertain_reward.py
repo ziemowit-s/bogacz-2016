@@ -4,19 +4,18 @@ import matplotlib.pyplot as plt
 from au.aumodel import AUModel
 
 
-def compute_risk(epoch, steps, a, b, risk_reward_proba, actor_only, safe_reward, risk_reward):
+def compute_risk(epoch, steps, a, b, risk_reward_proba, with_critic, safe_reward, risk_reward):
     """
     :return:
         probability of risky choise
     """
     risk_probas = []
     for epoch_i in range(epoch):
-        model = AUModel(num_of_states=1, num_of_actions=2, actor_only=actor_only)
+        model = AUModel(num_of_states=1, num_of_actions=2, with_critic=with_critic,
+                        alfa=0.1, beta=0.1)
 
         for step_i in range(steps):
             actions = model.act(a=a, b=b)
-            #if step_i % 100 == 0:
-                #print(actions)
 
             # compute action: 0 or 1
             if np.random.random(size=1)[0] <= actions[0]:
@@ -49,13 +48,17 @@ def print_probas(states):
 Train Actor Uncertainty Model with uncertain reward.
 """
 if __name__ == '__main__':
-    SAFE_REWARD = 2
+    """
+    risky lever gave higher expected reward in the 100% and 50% conditions while choosing the safe 
+    lever had higher mean reward in the 12.5% condition
+    """
+    SAFE_REWARD = 1
     RISK_REWARD = 4
-    RISK_REWARD_PROBA = [1.0, 0.5, 0.25, 0.125]
 
-    EPOCH = 100
+    EPOCH = 10
     BATCH_NUM = 10000
-    ACTOR_ONLY = True
+    WITH_CRITIC = False
+    RISK_REWARD_PROBA = [1.0, 0.5, 0.25, 0.125]
 
     params = {
         "d1_agonist": {'a': 3.13, 'b': 0.59, 'a_cont': 1.71},
@@ -67,6 +70,10 @@ if __name__ == '__main__':
 
     fig, axs = plt.subplots(2, 2)
     axs = np.reshape(axs, [4, 1])
+    x_range = [i for i in range(len(RISK_REWARD_PROBA))]
+
+    y_proba = [0, 20, 40, 60, 80, 100]
+    y_range = [0.0, 0.2, 0.4, 0.6, 0.8, 1.0]
 
     for i, (manipulation, p) in enumerate(params.items()):
         ax = axs[i][0]
@@ -77,7 +84,7 @@ if __name__ == '__main__':
             a = p['a']
             b = p['b']
             risk_proba = compute_risk(epoch=EPOCH, steps=BATCH_NUM, a=a, b=b,
-                                      risk_reward_proba=proba, actor_only=ACTOR_ONLY,
+                                      risk_reward_proba=proba, with_critic=WITH_CRITIC,
                                       safe_reward=SAFE_REWARD, risk_reward=RISK_REWARD)
             intervention.append(risk_proba)
 
@@ -87,16 +94,28 @@ if __name__ == '__main__':
                 b = p['b_cont']
 
             risk_proba = compute_risk(epoch=EPOCH, steps=BATCH_NUM, a=a, b=b,
-                                      risk_reward_proba=proba, actor_only=ACTOR_ONLY,
+                                      risk_reward_proba=proba, with_critic=WITH_CRITIC,
                                       safe_reward=SAFE_REWARD, risk_reward=RISK_REWARD)
             control.append(risk_proba)
 
-        ax.plot([i for i in range(len(RISK_REWARD_PROBA))], intervention, label=manipulation)
-        ax.plot([i for i in range(len(RISK_REWARD_PROBA))], control, label="control")
+        ax.set_ylim([0, 1])
+        ax.set_yticks(y_range)
+        ax.set_yticklabels(y_proba)
+
+        ax.set_xticks(x_range)
+        ax.set_xticklabels([100, 50, 25, 12.5])
+
+        ax.plot(x_range, intervention, label=manipulation, color='black', marker='o',
+                markersize=5)
+        ax.plot(x_range, control, label="control", linestyle='--', color='gray', marker='o',
+                markersize=5)
+
+        ax.legend(loc="upper right")
+        ax.set_xlabel("Risky lever probability")
+        ax.set_ylabel("% choice of Risky lever")
 
         print(manipulation)
         print('inte:', intervention)
         print('cont:', control)
 
-    fig.legend()
     plt.show()
