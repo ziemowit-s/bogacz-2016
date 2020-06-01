@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-from au.aumodel import AUModel
+from actor_uncertainty_2016.au.aumodel import AUModel
 
 
 def compute_risk(epoch, steps, a, b, risk_reward_proba, with_critic, safe_reward, risk_reward):

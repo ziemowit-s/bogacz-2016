@@ -1,6 +1,5 @@
 import numpy as np
 
-from au.aumodel import AUModel
 
 """
 Train Actor Uncertainty Model with detrministic reward.

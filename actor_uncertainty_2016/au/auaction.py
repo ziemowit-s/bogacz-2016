@@ -1,10 +1,10 @@
-from typing import Optional
-
 import numpy as np
 
+from core.action import Action
 
-class AUAction:
-    def __init__(self, alfa:float = 0.1, beta: float = 0.1, actor_only: bool = True,
+
+class AUAction(Action):
+    def __init__(self, alfa: float = 0.1, beta: float = 0.1, actor_only: bool = True,
                  a: int = 1, b: int = 1):
         """
         Actor Uncertainty action
@@ -12,6 +12,7 @@ class AUAction:
         :param beta:
         :param actor_only:
         """
+        Action.__init__(self)
         self._alfa = alfa
         self._beta = beta
         self.actor_only = actor_only
@@ -30,15 +31,17 @@ class AUAction:
         self._v = self._v + self._alfa * (r - self._v)
 
     def g(self, r):
-        self._g = self._g + self._alfa * np.max([r - self._get_comparator(), 0]) - self._beta * self._g
+        self._g = self._g + self._alfa * np.max(
+            [r - self._get_comparator(), 0]) - self._beta * self._g
 
     def n(self, r):
-        self._n = self._n + self._alfa * np.abs(np.min([r - self._get_comparator(), 0])) - self._beta * self._n
+        self._n = self._n + self._alfa * np.abs(
+            np.min([r - self._get_comparator(), 0])) - self._beta * self._n
 
-    def q(self, r):
+    def q(self):
         self._q = self._g - self._n  # q + self._alfa * (r - self._v) - self._alfa * q
 
-    def s(self, r):
+    def s(self):
         self._s = self._g + self._n  # s + self._alfa * np.abs(r - self._v) - self._alfa * s
 
     def reward(self, r):
@@ -46,8 +49,8 @@ class AUAction:
         self.n(r)
 
         self.v(r)
-        self.q(r)
-        self.s(r)
+        self.q()
+        self.s()
 
     def act(self, a=None, b=None):
         if a:
@@ -64,4 +67,3 @@ class AUAction:
             return self._q
         else:
             return self._v
-

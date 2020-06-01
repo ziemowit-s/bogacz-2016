@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-from au.aumodel import AUModel
+from actor_uncertainty_2016.au.aumodel import AUModel
 
 """
 Recreate a fig. 2 from the paper
