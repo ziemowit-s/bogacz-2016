@@ -5,7 +5,7 @@ from au.austate import AUState
 
 class AUModel:
     def __init__(self, num_of_states: int = 1, num_of_actions: int = 1, alfa: float = 0.1,
-                 beta: Optional[float] = None, with_critic: bool = False):
+                 beta: float = 0.1, with_critic: bool = False):
         """
         Actor Uncertainty model
         """

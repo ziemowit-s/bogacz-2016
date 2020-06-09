@@ -14,8 +14,8 @@ if __name__ == '__main__':
 
     accuracy = []
     for epoch in range(EPOCH):
-        model = AUModel(num_of_states=STATE_AND_ACTION_NUM,
-                        num_of_actions=STATE_AND_ACTION_NUM, with_critic=ACTOR_ONLY)
+        model = AUModel(num_of_states=STATE_AND_ACTION_NUM, num_of_actions=STATE_AND_ACTION_NUM, with_critic=ACTOR_ONLY,
+                        alfa=0.1, beta=0.1 / np.sqrt(2 * np.pi))
 
         N = [i for i in range(BATCH_NUM)]
         r = 0
