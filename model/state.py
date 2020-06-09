@@ -1,16 +1,15 @@
 import numpy as np
-from typing import Optional
 
-from au.auaction import AUAction
+from model.action import Action
 
 
-class AUState:
+class State:
     def __init__(self, num_of_actions: int = 1, alfa: float = 0.1,
-                 beta: Optional[float] = None, actor_only: bool = False):
+                 beta: float = None, actor_only: bool = False):
 
         self.actions = []
         for _ in range(num_of_actions):
-            a = AUAction(alfa=alfa, beta=beta, actor_only=actor_only)
+            a = Action(alfa=alfa, beta=beta, actor_only=actor_only)
             self.actions.append(a)
 
     def reward(self, reward, action: int = 0):

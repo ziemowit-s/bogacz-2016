@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-from au.aumodel import AUModel
+from model.model import Model
 
 
 def compute_risk(epoch, steps, a, b, risk_reward_proba, with_critic, safe_reward, risk_reward):
@@ -11,8 +11,8 @@ def compute_risk(epoch, steps, a, b, risk_reward_proba, with_critic, safe_reward
     """
     risk_probas = []
     for epoch_i in range(epoch):
-        model = AUModel(num_of_states=1, num_of_actions=2, with_critic=with_critic,
-                        alfa=0.1, beta=0.1)
+        model = Model(num_of_states=1, num_of_actions=2, with_critic=with_critic,
+                      alfa=0.1, beta=0.1)
 
         for step_i in range(steps):
             actions = model.act(a=a, b=b)

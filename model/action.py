@@ -1,9 +1,7 @@
-from typing import Optional
-
 import numpy as np
 
 
-class AUAction:
+class Action:
     def __init__(self, alfa:float = 0.1, beta: float = 0.1, actor_only: bool = True,
                  a: int = 1, b: int = 1):
         """
