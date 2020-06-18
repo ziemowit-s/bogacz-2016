@@ -57,6 +57,9 @@ class Action:
         pi = np.exp(0.5 * u)
         return pi
 
+    def get_values(self):
+        return self._g, self._n
+
     def _get_comparator(self):
         if self.actor_only:
             return self._q

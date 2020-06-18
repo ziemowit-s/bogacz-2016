@@ -7,12 +7,16 @@ from model.model import Model
 def compute_risk(epoch, steps, a, b, risk_reward_proba, with_critic, safe_reward, risk_reward):
     """
     :return:
-        probability of risky choise
+        tuple(probability of risky choise, action values)
     """
     risk_probas = []
+    action_values = []
     for epoch_i in range(epoch):
         model = Model(num_of_states=1, num_of_actions=2, with_critic=with_critic,
                       alfa=0.1, beta=0.1)
+
+        epoch_action_values = []
+        action_values.append(epoch_action_values)
 
         for step_i in range(steps):
             actions = model.act(a=a, b=b)
@@ -32,11 +36,39 @@ def compute_risk(epoch, steps, a, b, risk_reward_proba, with_critic, safe_reward
                     r = 0
 
             model.reward(reward=r, action=action)
+            epoch_action_values.append(model.states[0].get_values())
 
         # write last probability of safe action
         risk_probas.append(actions[1])
 
-    return np.average(risk_probas)
+    return np.average(risk_probas), action_values
+
+
+def plot_action_values(action_values, epoch_num, title):
+    """
+    Plot action values for each action. Action value consists of G and N values.
+    :param action_values: 
+        action_value obtained from compute_risk() function (second element of the returned tuple)
+    :param epoch_num: 
+        which epoch you want to plot
+    :param title: 
+        title of the graph
+    """
+    epoch = action_values[epoch_num]
+
+    fig, axes = plt.subplots(2, 1)
+    ax0, ax1 = axes.flatten()
+    fig.suptitle(title, fontsize=16)
+
+    ax0.set_title("Action: Safe Reward")
+    ax0.plot([i for i in range(len(epoch))], [a[0].g for a in epoch], label="GO")
+    ax0.plot([i for i in range(len(epoch))], [a[0].n for a in epoch], label="NO-GO")
+    ax0.legend()
+
+    ax1.set_title("Action: Risky reward")
+    ax1.plot([i for i in range(len(epoch))], [a[1].g for a in epoch], label="GO")
+    ax1.plot([i for i in range(len(epoch))], [a[1].n for a in epoch], label="NO-GO")
+    ax1.legend()
 
 
 def print_probas(states):
@@ -55,8 +87,8 @@ if __name__ == '__main__':
     SAFE_REWARD = 1
     RISK_REWARD = 4
 
-    EPOCH = 10
-    BATCH_NUM = 10000
+    EPOCH = 1
+    BATCH_NUM = 1000
     WITH_CRITIC = False
     RISK_REWARD_PROBA = [1.0, 0.5, 0.25, 0.125]
 
@@ -83,9 +115,9 @@ if __name__ == '__main__':
         for proba in RISK_REWARD_PROBA:
             a = p['a']
             b = p['b']
-            risk_proba = compute_risk(epoch=EPOCH, steps=BATCH_NUM, a=a, b=b,
-                                      risk_reward_proba=proba, with_critic=WITH_CRITIC,
-                                      safe_reward=SAFE_REWARD, risk_reward=RISK_REWARD)
+            risk_proba, action_values = compute_risk(epoch=EPOCH, steps=BATCH_NUM, a=a, b=b,
+                                                     risk_reward_proba=proba, with_critic=WITH_CRITIC,
+                                                     safe_reward=SAFE_REWARD, risk_reward=RISK_REWARD)
             intervention.append(risk_proba)
 
             if 'a_cont' in p:
@@ -93,10 +125,15 @@ if __name__ == '__main__':
             else:
                 b = p['b_cont']
 
-            risk_proba = compute_risk(epoch=EPOCH, steps=BATCH_NUM, a=a, b=b,
-                                      risk_reward_proba=proba, with_critic=WITH_CRITIC,
-                                      safe_reward=SAFE_REWARD, risk_reward=RISK_REWARD)
+            risk_proba, action_values = compute_risk(epoch=EPOCH, steps=BATCH_NUM, a=a, b=b,
+                                                     risk_reward_proba=proba, with_critic=WITH_CRITIC,
+                                                     safe_reward=SAFE_REWARD, risk_reward=RISK_REWARD)
             control.append(risk_proba)
+
+            # Show GO/NO-GO population only for control D1 agonist 0.5 probability
+            if manipulation == "d1_agonist" and proba == 0.5:
+                title = f"CONTROL: {manipulation}, Probability: {proba}"
+                plot_action_values(action_values, epoch_num=0, title=title)
 
         ax.set_ylim([0, 1])
         ax.set_yticks(y_range)
