@@ -2,7 +2,7 @@ Implementation of the paper: Mikhael, J. G. & Bogacz, R. Learning Reward Uncerta
 PLoS Comput. Biol. (2016). doi:10.1371/journal.pcbi.1005062
 
 ## make_fig2_au.py
-Recreates a fig. 2 from the paper with Actor Uncertainty approach
+Replicates fig. 2 from the paper: train Actor Uncertainty Model with detrministic reward.
 
 #### Parameters:
 * MEAN - mean of the reward distribution
@@ -15,7 +15,7 @@ Recreates a fig. 2 from the paper with Actor Uncertainty approach
 * N (NO-GO population) - all lower curves
 
 ## train_au_with_deterministic_reward.py
-Replication of fig.2 from the paper: train Actor Uncertainty Model with detrministic reward.
+Training example of Actor Uncertainty Model with detrministic reward.
 
 * EPOCH - number of epochs 
 * REWARD - integer representing expected reward (here it is deterministic)
@@ -37,17 +37,17 @@ Returns Probability matrix with highest probabilities on diagonal (which is the 
 ```
 
 ## train_au_with_uncertain_reward.py
-*Replication of the fig. 5 of the paper: train Actor Uncertainty Model with uncertain reward.
+Replication of the fig. 5 of the paper: train Actor Uncertainty Model with uncertain reward.
 
-Reward set to:
- * 1 for safe reward 
- * 4 for risky reward
+Reward have been set to:
+ * 1 (AU) for safe reward 
+ * 4 (AU) for risky reward
  
 Those assumptions based on the publication:
 "risky lever gave higher expected reward in the 100% and 50% conditions while choosing the safe 
 lever had higher mean reward in the 12.5% condition"
 
-You can manipulate params to change agent's preferences of choosing risky/non-risky reward. 
+You can manipulate parameters to change agent's preferences of choosing risky/non-risky reward. 
 In general if (b-a) is bigger - preference for risk choosing is higher
 
 #### Params:
