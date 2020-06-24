@@ -1,5 +1,5 @@
 Implementation of the paper: Mikhael, J. G. & Bogacz, R. Learning Reward Uncertainty in the Basal Ganglia. 
-PLoS Comput. Biol. (2016). doi:10.1371/journal.pcbi.1005062
+PLoS Comput. Biol. (2016). https://doi:10.1371/journal.pcbi.1005062
 
 ## make_fig2_au.py
 Replicates fig. 2 from the paper: train Actor Uncertainty Model with detrministic reward.
