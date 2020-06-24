@@ -2,9 +2,9 @@ Implementation of the paper: Mikhael, J. G. & Bogacz, R. Learning Reward Uncerta
 PLoS Comput. Biol. (2016). doi:10.1371/journal.pcbi.1005062
 
 ## make_fig2_au.py
-Recreate a fig. 2 from the paper with Actor Uncertainty approach
+Recreates a fig. 2 from the paper with Actor Uncertainty approach
 
-Parameters:
+#### Parameters:
 * MEAN - mean of the reward distribution
 * STD - standard deviation of the reward distribution
 
